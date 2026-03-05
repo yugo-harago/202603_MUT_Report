@@ -2,11 +2,12 @@ import "./index.css";
 import { Composition } from "remotion";
 import { JapanAdventistStats } from "./JapanStats";
 
-// Total: 68 s × 30 fps = 2 040 frames
-// Scene1  0–600   (20 s)
-// Scene2  540–1200 (22 s, 2 s overlap)
-// Scene3  1140–1800 (22 s, 2 s overlap)
-// Outro   1740–2040 (10 s, 2 s overlap)
+// Total: 23.5 s × 24 fps = 564 frames
+// Matches transcript subtitles 3–10
+// Scene1      0–72    (3 s,  subs 3 start)
+// Scene2      60–132  (3 s,  subs 3–4)
+// Scene3      120–192 (3 s,  subs 4–5)
+// TokyoScene  180–564 (16 s, subs 6–10)
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -14,8 +15,8 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="JapanAdventistStats"
         component={JapanAdventistStats}
-        durationInFrames={68 * 30}
-        fps={30}
+        durationInFrames={564}
+        fps={24}
         width={1280}
         height={720}
       />

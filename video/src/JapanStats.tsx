@@ -4,6 +4,7 @@ import {
   Sequence,
   interpolate,
   spring,
+  staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
@@ -84,41 +85,17 @@ function clamp(v: number, lo = 0, hi = 1) {
 function JapanBg({ opacity = 1 }: { opacity?: number }) {
   return (
     <AbsoluteFill style={{ opacity }}>
-      <svg
-        viewBox={`0 0 ${W} ${H}`}
-        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.045 }}
-      >
-        {/* Mount Fuji */}
-        <path d={`M 320 ${H} L 640 200 L 960 ${H} Z`} fill={WHITE} />
-        <path d="M 608 270 L 640 200 L 672 270 Z" fill={WHITE} />
-        {/* Torii gate */}
-        <g transform="translate(1080 310)">
-          <rect x="-80" y="0" width="160" height="14" rx="2" fill={WHITE} />
-          <rect x="-65" y="22" width="130" height="9" rx="2" fill={WHITE} />
-          <rect x="-52" y="31" width="13" height="130" rx="2" fill={WHITE} />
-          <rect x="39" y="31" width="13" height="130" rx="2" fill={WHITE} />
-        </g>
-        {/* Scattered cherry blossoms */}
-        {[...Array(18)].map((_, k) => {
-          const bx = ((k * 79 + 60) % (W - 120)) + 60;
-          const by = ((k * 53 + 80) % 380) + 40;
-          return (
-            <g key={k} transform={`translate(${bx} ${by})`} opacity="0.55">
-              {[0, 72, 144, 216, 288].map((a, j) => (
-                <ellipse
-                  key={j}
-                  cx={Math.cos((a * Math.PI) / 180) * 9}
-                  cy={Math.sin((a * Math.PI) / 180) * 9}
-                  rx="5.5"
-                  ry="3"
-                  fill={WHITE}
-                  transform={`rotate(${a})`}
-                />
-              ))}
-            </g>
-          );
-        })}
-      </svg>
+      <img
+        src={staticFile("img/JapanSimple.svg")}
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          opacity: 0.12,
+        }}
+      />
     </AbsoluteFill>
   );
 }
@@ -163,19 +140,19 @@ function Scene1() {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  const DOTS_START = 1 * fps;
-  const TEXT_START = 11 * fps;
-  const FADE_OUT = 18 * fps;
+  const DOTS_START = Math.round(fps * 0.15);
+  const TEXT_START = Math.round(fps * 1.3);
+  const FADE_OUT = Math.round(fps * 2.5);
 
-  const sceneOp = interpolate(frame, [FADE_OUT, 20 * fps], [1, 0], {
+  const sceneOp = interpolate(frame, [FADE_OUT, fps * 3], [1, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-  const headerOp = interpolate(frame, [0, fps * 0.8], [0, 1], {
+  const headerOp = interpolate(frame, [0, Math.round(fps * 0.25)], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-  const textOp = interpolate(frame, [TEXT_START, TEXT_START + fps], [0, 1], {
+  const textOp = interpolate(frame, [TEXT_START, TEXT_START + Math.round(fps * 0.3)], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
@@ -229,7 +206,7 @@ function Scene1() {
           </symbol>
         </defs>
         {ALL_DOTS.map((d, i) => {
-          const stagger = (d.row * 0.14 + d.col * 0.035) * fps;
+          const stagger = (d.row * 0.028 + d.col * 0.007) * fps;
           const p = clamp(
             interpolate(frame, [DOTS_START + stagger, DOTS_START + stagger + 12], [0, 1])
           );
@@ -263,7 +240,7 @@ function Scene1() {
         >
           Total Population
         </div>
-        <Counter value={JAPAN_POP} startFrame={TEXT_START} endFrame={TEXT_START + fps * 3} />
+        <Counter value={JAPAN_POP} startFrame={TEXT_START} endFrame={TEXT_START + Math.round(fps * 0.8)} />
         <div
           style={{
             fontFamily: "sans-serif",
@@ -285,16 +262,16 @@ function Scene2() {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  const FADE_IN_END = fps * 2;
-  const DIM_START = fps * 2;
-  const DIM_END = fps * 5;
-  const GLOW_END = fps * 7;
-  const TEXT_START = fps * 7;
-  const FADE_OUT = fps * 20;
+  const FADE_IN_END = Math.round(fps * 0.4);
+  const DIM_START = Math.round(fps * 0.4);
+  const DIM_END = Math.round(fps * 1.0);
+  const GLOW_END = Math.round(fps * 1.6);
+  const TEXT_START = Math.round(fps * 1.5);
+  const FADE_OUT = Math.round(fps * 2.4);
 
   const sceneOp = interpolate(
     frame,
-    [0, FADE_IN_END, FADE_OUT, fps * 22],
+    [0, FADE_IN_END, FADE_OUT, Math.round(fps * 2.8)],
     [0, 1, 1, 0],
     { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
   );
@@ -308,7 +285,7 @@ function Scene2() {
     extrapolateRight: "clamp",
     easing: Easing.out(Easing.quad),
   });
-  const textOp = interpolate(frame, [TEXT_START, TEXT_START + fps], [0, 1], {
+  const textOp = interpolate(frame, [TEXT_START, TEXT_START + Math.round(fps * 0.3)], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
@@ -402,7 +379,7 @@ function Scene2() {
             gap: 16,
           }}
         >
-          <Counter value={CHRISTIAN_POP} startFrame={TEXT_START} endFrame={TEXT_START + fps * 2} size={60} />
+          <Counter value={CHRISTIAN_POP} startFrame={TEXT_START} endFrame={TEXT_START + Math.round(fps * 0.8)} size={60} />
           <span
             style={{
               fontFamily: "sans-serif",
@@ -435,15 +412,15 @@ function Scene3() {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  const FADE_IN_END = fps * 2;
-  const SPOTLIGHT_START = fps * 1;
-  const SPOTLIGHT_END = fps * 4;
-  const GRID_START = fps * 3;
-  const GRID_END = fps * 6;
-  const DIM_START = fps * 5.5;
-  const DIM_END = fps * 8.5;
-  const GLOW_END = fps * 11;
-  const TEXT_START = fps * 10;
+  const FADE_IN_END = Math.round(fps * 0.4);
+  const SPOTLIGHT_START = Math.round(fps * 0.2);
+  const SPOTLIGHT_END = Math.round(fps * 0.7);
+  const GRID_START = Math.round(fps * 0.6);
+  const GRID_END = Math.round(fps * 1.2);
+  const DIM_START = Math.round(fps * 1.1);
+  const DIM_END = Math.round(fps * 1.7);
+  const GLOW_END = Math.round(fps * 2.1);
+  const TEXT_START = Math.round(fps * 1.9);
 
   const sceneOp = interpolate(frame, [0, FADE_IN_END], [0, 1], {
     extrapolateLeft: "clamp",
@@ -478,7 +455,7 @@ function Scene3() {
     extrapolateRight: "clamp",
     easing: Easing.out(Easing.quad),
   });
-  const textOp = interpolate(frame, [TEXT_START, TEXT_START + fps], [0, 1], {
+  const textOp = interpolate(frame, [TEXT_START, TEXT_START + Math.round(fps * 0.3)], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
@@ -487,7 +464,7 @@ function Scene3() {
   const pulse = 1 + Math.sin((frame / fps) * Math.PI * 1.2) * 0.18 * glowP;
 
   // Arrow label opacity
-  const arrowOp = interpolate(frame, [DIM_END, DIM_END + fps], [0, 1], {
+  const arrowOp = interpolate(frame, [DIM_END, DIM_END + Math.round(fps * 0.4)], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
@@ -581,7 +558,7 @@ function Scene3() {
 
           // Staggered appearance
           const dotOp = clamp(
-            interpolate(frame, [GRID_START + i * 0.6, GRID_START + i * 0.6 + 12], [0, 1])
+            interpolate(frame, [GRID_START + i * 0.12, GRID_START + i * 0.12 + 6], [0, 1])
           );
           const dimmedOp = interpolate(dimP, [0, 1], [1, 0.1]);
 
@@ -649,7 +626,7 @@ function Scene3() {
           <Counter
             value={SDA_POP}
             startFrame={TEXT_START}
-            endFrame={TEXT_START + fps * 2}
+            endFrame={TEXT_START + Math.round(fps * 0.7)}
             color={GOLD}
             size={60}
           />
@@ -685,7 +662,7 @@ function Outro() {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  const op = interpolate(frame, [0, fps, fps * 7, fps * 9], [0, 1, 1, 0], {
+  const op = interpolate(frame, [0, Math.round(fps * 0.4), Math.round(fps * 1.0), Math.round(fps * 1.4)], [0, 1, 1, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
@@ -760,6 +737,188 @@ function Outro() {
   );
 }
 
+// ─── Scene 4: Tokyo ───────────────────────────────────────────────────────────
+// Covers subtitles 6–10 (16 s = 384 frames)
+// Sub 6–7 (~0.4–7.1 s):  "Until 2025, Tokyo was the largest urban area…"
+// Sub 8–9 (~7.6–11.9 s): "Nearly one-third of the population lives here"
+// Sub 10  (~12.3–16 s):  "Yet, Tokyo remains largely unreached."
+//
+// Tokyo/Kanto approximate screen position after objectFit:contain of 479×547 SVG in 1280×720:
+//   map width ≈ 631 px, left offset ≈ 324 px
+//   SVG ~(350, 345) → screen ~(784, 454)
+const TOKYO_X = 784;
+const TOKYO_Y = 454;
+
+function TokyoScene() {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+
+  // ── Phase 1: "Tokyo was the largest urban area" (subs 6–7) ──
+  const FADE_IN_END = Math.round(fps * 0.5);
+  const TITLE_START = Math.round(fps * 0.4);       // ~sub 6 relative start
+  const HIGHLIGHT_START = Math.round(fps * 1.0);
+
+  // ── Phase 2: "Nearly one-third …" (subs 8–9) — holds static after frame 191 ──
+  const PHASE2_START = Math.round(fps * 7.6);      // ~sub 8
+
+  const sceneOp = interpolate(frame, [0, FADE_IN_END], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+
+  const titleOp = interpolate(
+    frame,
+    [TITLE_START, TITLE_START + Math.round(fps * 0.5), PHASE2_START - Math.round(fps * 0.5), PHASE2_START],
+    [0, 1, 1, 0],
+    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+  );
+
+  const highlightScale = spring({
+    frame: frame - HIGHLIGHT_START,
+    fps,
+    config: { damping: 120, stiffness: 80 },
+  });
+
+  const phase2Op = interpolate(
+    frame,
+    [PHASE2_START, PHASE2_START + Math.round(fps * 0.5)],
+    [0, 1],
+    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+  );
+
+  const mapOp = interpolate(
+    frame,
+    [0, FADE_IN_END],
+    [0, 0.4],
+    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+  );
+
+  const clampedHighlight = Math.min(highlightScale, 1);
+
+  return (
+    <AbsoluteFill style={{ background: BG, opacity: sceneOp }}>
+      {/* Japan map — more prominent than the background usage */}
+      <img
+        src={staticFile("img/JapanSimple.svg")}
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "contain",
+          opacity: mapOp,
+        }}
+      />
+
+      {/* Tokyo highlight ring */}
+      <svg width={W} height={H} style={{ position: "absolute" }}>
+        {/* Outer glow */}
+        <circle cx={TOKYO_X} cy={TOKYO_Y} r={90 * clampedHighlight} fill={JAPAN_RED} opacity={clampedHighlight * 0.08} />
+        <circle cx={TOKYO_X} cy={TOKYO_Y} r={55 * clampedHighlight} fill={JAPAN_RED} opacity={clampedHighlight * 0.14} />
+        {/* Ring */}
+        <circle
+          cx={TOKYO_X}
+          cy={TOKYO_Y}
+          r={40 * clampedHighlight}
+          fill="none"
+          stroke={JAPAN_RED}
+          strokeWidth={1.5}
+          opacity={clampedHighlight * 0.9}
+        />
+        {/* Label */}
+        <text
+          x={TOKYO_X + 48}
+          y={TOKYO_Y + 5}
+          fill={JAPAN_RED}
+          fontSize={13}
+          letterSpacing={4}
+          fontFamily="sans-serif"
+          fontWeight="600"
+          opacity={clampedHighlight}
+        >
+          TOKYO
+        </text>
+      </svg>
+
+      {/* Phase 1: largest urban area */}
+      <div
+        style={{
+          position: "absolute",
+          top: 52,
+          width: "100%",
+          textAlign: "center",
+          opacity: titleOp,
+        }}
+      >
+        <div
+          style={{
+            fontFamily: "sans-serif",
+            fontSize: 12,
+            letterSpacing: 6,
+            textTransform: "uppercase",
+            color: JAPAN_RED,
+            fontWeight: 700,
+            marginBottom: 10,
+          }}
+        >
+          Tokyo, Japan
+        </div>
+        <div
+          style={{
+            fontFamily: "sans-serif",
+            fontSize: 28,
+            color: WHITE,
+            fontWeight: 300,
+            letterSpacing: 2,
+            lineHeight: 1.5,
+          }}
+        >
+          Until 2025, the largest urban area<br />in the entire world.
+        </div>
+      </div>
+
+      {/* Phase 2: one-third population */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: 80,
+          width: "100%",
+          textAlign: "center",
+          opacity: phase2Op,
+        }}
+      >
+        <div
+          style={{
+            fontFamily: "sans-serif",
+            fontSize: 12,
+            letterSpacing: 5,
+            textTransform: "uppercase",
+            color: "#7777a0",
+            marginBottom: 10,
+          }}
+        >
+          Population Concentration
+        </div>
+        <div
+          style={{
+            fontFamily: "sans-serif",
+            fontSize: 32,
+            color: WHITE,
+            fontWeight: 300,
+            lineHeight: 1.5,
+          }}
+        >
+          Nearly{" "}
+          <span style={{ color: JAPAN_RED, fontWeight: 700 }}>1 in 3</span>{" "}
+          Japanese people<br />
+          <span style={{ fontSize: 28, letterSpacing: 1 }}>lives in the greater Tokyo area.</span>
+        </div>
+      </div>
+
+    </AbsoluteFill>
+  );
+}
+
 // ─── Root composition ─────────────────────────────────────────────────────────
 // Scene timing (all in frames at 30 fps):
 //   Scene1: 0   → 600   (20 s)
@@ -772,17 +931,17 @@ export function JapanAdventistStats() {
   const { fps } = useVideoConfig();
   return (
     <AbsoluteFill style={{ background: BG }}>
-      <Sequence from={0} durationInFrames={20 * fps} premountFor={fps}>
+      <Sequence from={0} durationInFrames={3 * fps} premountFor={fps}>
         <Scene1 />
       </Sequence>
-      <Sequence from={18 * fps} durationInFrames={22 * fps} premountFor={fps}>
+      <Sequence from={Math.round(2.5 * fps)} durationInFrames={3 * fps} premountFor={fps}>
         <Scene2 />
       </Sequence>
-      <Sequence from={38 * fps} durationInFrames={22 * fps} premountFor={fps}>
+      <Sequence from={5 * fps} durationInFrames={3 * fps} premountFor={fps}>
         <Scene3 />
       </Sequence>
-      <Sequence from={58 * fps} durationInFrames={10 * fps} premountFor={fps}>
-        <Outro />
+      <Sequence from={Math.round(7.5 * fps)} durationInFrames={384} premountFor={fps}>
+        <TokyoScene />
       </Sequence>
     </AbsoluteFill>
   );
