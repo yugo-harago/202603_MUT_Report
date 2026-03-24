@@ -25,7 +25,9 @@
     "typescript": "5.9.3"
   },
   "scripts": {
+    "predev": "node scripts/generate-photo-files.js",
     "dev": "remotion studio",
+    "prebuild": "node scripts/generate-photo-files.js",
     "build": "remotion bundle",
     "upgrade": "remotion upgrade",
     "lint": "eslint src && tsc"

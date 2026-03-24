@@ -7,6 +7,7 @@ import { NetworkChurch } from "./NetworkChurch";
 import { HouseGroupPhotos, HOUSE_GROUP_PHOTOS_DURATION } from "./HouseGroupPhotos";
 import { TokyoKobeRoute, TOKYO_KOBE_DURATION } from "./TokyoKobeRoute";
 import { TrainingEssential, TRAINING_ESSENTIAL_DURATION } from "./TrainingEssential";
+import { ImageVortex, IMAGE_VORTEX_DURATION } from "./ImageVortex";
 
 // Total: 23.5 s × 24 fps = 564 frames
 // Matches transcript subtitles 3–10
@@ -70,6 +71,14 @@ export const RemotionRoot: React.FC = () => {
         id="TrainingEssential"
         component={TrainingEssential}
         durationInFrames={TRAINING_ESSENTIAL_DURATION}
+        fps={24}
+        width={1280}
+        height={720}
+      />
+      <Composition
+        id="ImageVortex"
+        component={ImageVortex}
+        durationInFrames={IMAGE_VORTEX_DURATION}
         fps={24}
         width={1280}
         height={720}
